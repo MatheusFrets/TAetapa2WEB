@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:form id="formEdicao">
+        <h:panelGroup rendered="#{controleAluno.editando}">
+            <div class="ui-fluid">
+                <p:messages/>
+                <p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-20"
+                             layout="grid" styleClass="ui-panelgrid-blank">
+                    <f:facet name="header">
+                        <p:outputLabel value="Edição de Alunos"/>
+                    </f:facet>
+                    <p:outputLabel for="txtID" value="ID"/>
+                    <p:inputText id="txtID" value="#{controleAluno.objeto.id}" readonly="true"
+                                 size="10"/>
+                    <p:outputLabel for="txtNome" value="Nome"/>
+                    <p:inputText id="txtNome" value="#{controleAluno.objeto.nome}"
+                                 size="40" maxlength="40"
+                                 required="true"
+                                 requiredMessage="O nome deve ser informado"
+                                 placeholder="Obrigatório"/>
+                    <p:outputLabel for="txtEmail" value="Email"/>
+                    <p:inputText id="txtEmail" value="#{controleAluno.objeto.email}"
+                                 size="50" maxlength="50"
+                                 required="true"
+                                 requiredMessage="O email deve ser informado"
+                                 placeholder="Obrigatório"/>
+                    <p:outputLabel for="txtNascimento" value="Nascimento"/>
+                    <p:calendar id="txtNascimento" value="#{controleAluno.objeto.nascimento}"
+                                mask="true" pattern="dd/MM/yyyy"
+                                placeholder="Obrigatório"
+                                required="true"
+                                requiredMessage="O nascimento deve ser informado"
+                                navigator="true">
+                        <f:converter converterId="converterCalendar"/>
+                    </p:calendar>
+                    
+                    
+                    
+                    
+                    
+                    <p:commandButton value="Salvar" icon="ui-icon-disk"
+                                     actionListener="#{controleAluno.salvar()}"
+                                     update="formEdicao :formListagem"/>
+                </p:panelGrid>
+                <h:panelGroup id="painelEndereco">
+                    <p:growl/>
+                <p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-20"
+                    layout="grid" styleClass="ui-panelgrid-blank"
+                    rendered="#{controleAluno.editandoEndereco}">
+                                 
+                    <f:facet name="header">
+                        <p:outputLabel value="Edicao de endereco do aluno"/>
+                    </f:facet>
+                    
+                    <p:outputLabel value="Endereco"/>
+                    <p:selectOneMenu id="cbxEndereco" value="#{controleAluno.endereco}">
+                        <f:selectItem itemLabel="Selecione um registro"
+                                      noSelectionOption="true"/>
+                        <f:selectItems value="#{controleAluno.daoEndereco.listaTodos}"
+                                       var="p" itemLabel="#{p.rua}"/>
+                        <f:converter converterId="converterEndereco"/>
+                        
+                    </p:selectOneMenu>
+                    <p:outputLabel value=""/>
+                    <p:commandButton id="btnSalvarEndereco" icon="ui-icon-disk"
+                                     actionListener="#{controleAluno.salvarEndereco()}"
+                                     process="cbxEndereco btnSalvarEndereco"
+                                     update="painelEndereco listagemEndereco"/>
+                </p:panelGrid>
+                </h:panelGroup>
+            </div>
+            <h:panelGroup id="listagemEndereco">
+                <h:panelGroup rendered="#{!controleAluno.editandoEndereco}">
+                    <p:commandButton value="Nova endereco" icon="ui-icon-plus"
+                                     actionListener="#{controleAluno.novaEndereco()}"
+                                     update="painelEndereco listagemEndereco"
+                                     process="@this"
+                                     id="btnNovaEndereco"/>
+                    
+                    <p:dataTable value="#{controleAluno.objeto.enderecos}"
+                                 var="end" reflow="true">
+                        <f:facet name="header">
+                            <p:outputLabel value="Endereco do Aluno"/>
+                        </f:facet>
+                        
+                        <p:column headerText="Rua">
+                            <p:outputLabel value="#{end.rua}"/>
+                        </p:column>
+                        <p:column headerText="Bairro">
+                            <p:outputLabel value="#{end.bairro}"/>
+                        </p:column>
+                        <p:column headerText="Cidade">
+                            <p:outputLabel value="#{end.cidade}"/>
+                        </p:column>
+                        <p:column headerText="Acoes">
+                            <div align="center">
+                                <p:commandButton icon="ui-icon-trash"
+                                                 actionListener="#{controleAluno.removerEndereco(end)}"
+                                                 process="@this" update="@form"/>
+                            </div>
+                        </p:column>
+                    </p:dataTable>
+                                 
+                </h:panelGroup>
+                
+                
+            </h:panelGroup>
+        </h:panelGroup>
+    </h:form>
+</html>
+
